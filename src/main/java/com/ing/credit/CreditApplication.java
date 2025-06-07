@@ -1,0 +1,38 @@
+package com.ing.credit;
+
+import com.ing.credit.dao.repositories.CustomerRepository;
+import com.ing.credit.services.CustomerService;
+import com.ing.credit.services.LoanService;
+import com.ing.credit.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+
+import java.math.BigDecimal;
+
+@SpringBootApplication
+public class CreditApplication {
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private CustomerService customerService;
+
+
+    public static void main(String[] args) {
+        SpringApplication.run(CreditApplication.class, args);
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void runAfterStartup() {
+
+        userService.createAdminUser("oktay1","123123");
+
+        customerService.createCustomer("c1","pass1","a","a", BigDecimal.valueOf(10000));
+        customerService.createCustomer("c2","pass1","a","a", BigDecimal.valueOf(10000));
+        customerService.createCustomer("c3","pass1","a","a", BigDecimal.valueOf(10000));
+        customerService.createCustomer("c4","pass1","a","a", BigDecimal.valueOf(10000));
+    }
+
+}
