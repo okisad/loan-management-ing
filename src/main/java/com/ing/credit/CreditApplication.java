@@ -29,10 +29,9 @@ public class CreditApplication {
 
         userService.createAdminUser("oktay1","123123");
 
-        customerService.createCustomer("c1","pass1","a","a", BigDecimal.valueOf(10000));
-        customerService.createCustomer("c2","pass1","a","a", BigDecimal.valueOf(10000));
-        customerService.createCustomer("c3","pass1","a","a", BigDecimal.valueOf(10000));
-        customerService.createCustomer("c4","pass1","a","a", BigDecimal.valueOf(10000));
+        customerService.createCustomer("customer1","pass1","a","a", BigDecimal.valueOf(10000));
+        customerService.createCustomer("customer2","pass1","a","a", BigDecimal.valueOf(10000));
+        customerService.createCustomer("customer3","pass1","a","a", BigDecimal.valueOf(10000));
     }
 
 }
