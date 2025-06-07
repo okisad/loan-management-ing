@@ -64,9 +64,7 @@ class UserServiceImplTest {
 
         when(userRepository.existsByUsername("admin")).thenReturn(Boolean.TRUE);
 
-        var runtimeException = assertThrows(RuntimeException.class, () -> {
-            userService.createAdminUser(username, password);
-        });
+        var runtimeException = assertThrows(RuntimeException.class, () -> userService.createAdminUser(username, password));
         assertEquals("Username is already in use", runtimeException.getMessage());
     }
 
@@ -98,9 +96,7 @@ class UserServiceImplTest {
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(new UserEntity(userId, username, "pass", List.of(RoleEnum.ADMIN))));
         when(passwordEncoder.matches(password, "pass")).thenReturn(false);
 
-        var runtimeException = assertThrows(RuntimeException.class, () -> {
-            userService.login(username, password);
-        });
+        var runtimeException = assertThrows(RuntimeException.class, () -> userService.login(username, password));
         assertEquals("Wrong password", runtimeException.getMessage());
 
     }

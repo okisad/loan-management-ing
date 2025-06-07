@@ -2,7 +2,6 @@ package com.ing.credit.services;
 
 import com.ing.credit.dtos.responses.CreateCustomerResponse;
 import com.ing.credit.dtos.responses.CustomerResponse;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 

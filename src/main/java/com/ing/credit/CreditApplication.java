@@ -1,8 +1,6 @@
 package com.ing.credit;
 
-import com.ing.credit.dao.repositories.CustomerRepository;
 import com.ing.credit.services.CustomerService;
-import com.ing.credit.services.LoanService;
 import com.ing.credit.services.UserService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -29,10 +27,13 @@ import java.math.BigDecimal;
         security = @SecurityRequirement(name = "bearerAuth")
 )
 public class CreditApplication {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CustomerService customerService;
+    private final UserService userService;
+    private final CustomerService customerService;
+
+    public CreditApplication(UserService userService, CustomerService customerService) {
+        this.userService = userService;
+        this.customerService = customerService;
+    }
 
 
     public static void main(String[] args) {

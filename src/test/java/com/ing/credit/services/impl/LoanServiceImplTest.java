@@ -120,9 +120,7 @@ class LoanServiceImplTest {
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(new CustomerEntity(customerId, "first", "last", customerCreditLimit, customerUsedCreditLimit,null)));
 
 
-        var runtimeExeption = assertThrows(RuntimeException.class, () -> {
-            loanService.createLoan(customerId, loanAmount, interestRate, numberOfInstallments);
-        });
+        var runtimeExeption = assertThrows(RuntimeException.class, () -> loanService.createLoan(customerId, loanAmount, interestRate, numberOfInstallments));
         assertEquals("Customer not enough available credit limit", runtimeExeption.getMessage());
     }
 
@@ -142,9 +140,7 @@ class LoanServiceImplTest {
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(new CustomerEntity(customerId, "first", "last", customerCreditLimit, customerUsedCreditLimit,null)));
 
 
-        var runtimeException = assertThrows(RuntimeException.class, () -> {
-            loanService.createLoan(customerId, loanAmount, interestRate, numberOfInstallments);
-        });
+        var runtimeException = assertThrows(RuntimeException.class, () -> loanService.createLoan(customerId, loanAmount, interestRate, numberOfInstallments));
         assertEquals("Interest rate must be between 0.1 and 0.5", runtimeException.getMessage());
     }
 
@@ -165,9 +161,7 @@ class LoanServiceImplTest {
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(new CustomerEntity(customerId, "first", "last", customerCreditLimit, customerUsedCreditLimit,null)));
 
 
-        var runtimeException = assertThrows(RuntimeException.class, () -> {
-            loanService.createLoan(customerId, loanAmount, interestRate, numberOfInstallments);
-        });
+        var runtimeException = assertThrows(RuntimeException.class, () -> loanService.createLoan(customerId, loanAmount, interestRate, numberOfInstallments));
         assertEquals("Installments must be one of 3,6,9,12", runtimeException.getMessage());
     }
 
@@ -216,9 +210,7 @@ class LoanServiceImplTest {
 
         when(loanRepository.findById(loanId)).thenReturn(Optional.empty());
 
-        var runtimeException = assertThrows(RuntimeException.class, () -> {
-            loanService.payLoan(loanId, BigDecimal.valueOf(10000));
-        });
+        var runtimeException = assertThrows(RuntimeException.class, () -> loanService.payLoan(loanId, BigDecimal.valueOf(10000)));
         assertEquals("Loan not found", runtimeException.getMessage());
     }
 
@@ -238,9 +230,7 @@ class LoanServiceImplTest {
         var loan = new LoanEntity(loanId, null, loanAmount, numberOfInstallments, true, installments);
         when(loanRepository.findById(loanId)).thenReturn(Optional.of(loan));
 
-        var runtimeException = assertThrows(RuntimeException.class, () -> {
-            loanService.payLoan(loanId, BigDecimal.valueOf(10000));
-        });
+        var runtimeException = assertThrows(RuntimeException.class, () -> loanService.payLoan(loanId, BigDecimal.valueOf(10000)));
         assertEquals("There is no installment that can be paid", runtimeException.getMessage());
     }
 

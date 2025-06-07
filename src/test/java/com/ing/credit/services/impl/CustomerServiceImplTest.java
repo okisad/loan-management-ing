@@ -70,9 +70,7 @@ class CustomerServiceImplTest {
 
         when(userRepository.existsByUsername(username)).thenReturn(Boolean.TRUE);
 
-        var runtimeException = assertThrows(RuntimeException.class, () -> {
-            customerService.createCustomer("username", "pass1","firstname", "lastname", BigDecimal.valueOf(10000));
-        });
+        var runtimeException = assertThrows(RuntimeException.class, () -> customerService.createCustomer("username", "pass1","firstname", "lastname", BigDecimal.valueOf(10000)));
         assertEquals("Username is already in use", runtimeException.getMessage());
     }
 
@@ -91,11 +89,11 @@ class CustomerServiceImplTest {
 
         verify(customerRepository).findAll();
 
-        assertEquals(firstId, response.get(0).id());
-        assertEquals("a", response.get(0).firstName());
-        assertEquals("aa", response.get(0).lastName());
-        assertEquals(BigDecimal.ONE, response.get(0).creditLimit());
-        assertEquals(BigDecimal.ZERO, response.get(0).usedCredit());
+        assertEquals(firstId, response.getFirst().id());
+        assertEquals("a", response.getFirst().firstName());
+        assertEquals("aa", response.getFirst().lastName());
+        assertEquals(BigDecimal.ONE, response.getFirst().creditLimit());
+        assertEquals(BigDecimal.ZERO, response.getFirst().usedCredit());
 
         assertEquals(secondId, response.get(1).id());
         assertEquals("b", response.get(1).firstName());

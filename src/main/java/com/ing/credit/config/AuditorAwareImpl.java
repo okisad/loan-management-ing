@@ -2,7 +2,6 @@ package com.ing.credit.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 

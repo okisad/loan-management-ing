@@ -52,12 +52,12 @@ class LoanInstallmentServiceImplTest {
 
         var response = loanInstallmentService.listInstallments(loanId);
 
-        assertEquals(firstInstallmentId, response.get(0).id());
-        assertEquals(LocalDate.of(2025, 1, 1), response.get(0).dueDate());
-        assertEquals(Boolean.FALSE, response.get(0).isPaid());
-        assertEquals(BigDecimal.valueOf(4000), response.get(0).amount());
-        assertEquals(BigDecimal.ZERO, response.get(0).paidAmount());
-        assertNull(response.get(0).paymentDate());
+        assertEquals(firstInstallmentId, response.getFirst().id());
+        assertEquals(LocalDate.of(2025, 1, 1), response.getFirst().dueDate());
+        assertEquals(Boolean.FALSE, response.getFirst().isPaid());
+        assertEquals(BigDecimal.valueOf(4000), response.getFirst().amount());
+        assertEquals(BigDecimal.ZERO, response.getFirst().paidAmount());
+        assertNull(response.getFirst().paymentDate());
 
         assertEquals(secondInstallmentId, response.get(1).id());
         assertEquals(LocalDate.of(2025, 2, 1), response.get(1).dueDate());
