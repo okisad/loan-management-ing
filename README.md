@@ -99,4 +99,7 @@ Run with Docker
 docker-compose up --build
 ```
 
+## Postman
+
+[Link](https://www.postman.com/dark-equinox-303092/workspace/ing-hub/collection/1311361-1570a655-7463-448c-8bfd-dbd1064ea4f2?action=share&creator=1311361&active-environment=1311361-126b1a42-c859-4c4e-a075-4846202eca99)
 
