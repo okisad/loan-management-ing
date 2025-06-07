@@ -23,8 +23,9 @@ public class UserDetailsServiceConfig {
             if (user.isEmpty()) {
                 throw new UsernameNotFoundException("User not found");
             }
-            var roles = Arrays.stream(user.get().getRoles().split(","))
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
+            var roles = user.get().getRoles()
+                    .stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                     .collect(Collectors.toList());
             return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(), roles);
         };

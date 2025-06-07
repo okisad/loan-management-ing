@@ -54,7 +54,7 @@ class CustomerServiceImplTest {
         var customer = customerCaptor.getValue();
 
         assertEquals(username, user.getUsername());
-        assertEquals(RoleEnum.CUSTOMER.name(), user.getRoles());
+        assertTrue(user.getRoles().contains(RoleEnum.CUSTOMER));
 
         assertEquals("firstname", customer.getFirstName());
         assertEquals("lastname", customer.getLastName());

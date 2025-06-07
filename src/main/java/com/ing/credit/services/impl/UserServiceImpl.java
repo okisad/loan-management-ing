@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,8 +30,9 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Username is already in use");
         }
         var encodedPassword = passwordEncoder.encode(password);
-        UserEntity userEntity = UserEntity.createUserEntity(username, encodedPassword, RoleEnum.ADMIN.name());
+        UserEntity userEntity = UserEntity.createUserEntity(username, encodedPassword, List.of(RoleEnum.ADMIN));
         userRepository.save(userEntity);
+        log.info("Admin user has been created with username {}", username);
     }
 
     @Override
@@ -39,6 +42,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Wrong password");
         }
         var customerId = customerRepository.findByUser_Id(user.getId()).map(CustomerEntity::getId).orElse(null);
+        log.info("{} has logged in", username);
         return jwtUtil.generateToken(username, user.getId(), customerId, user.getRoles());
 
     }

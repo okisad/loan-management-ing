@@ -131,7 +131,7 @@ public class LoanServiceImpl implements LoanService {
         var days = ChronoUnit.DAYS.between(now, dueDate);
         if (days > 0) {
             var rewardedAmount = rewardRate.multiply(amount).multiply(BigDecimal.valueOf(days));
-            return amount.subtract(rewardedAmount);
+            return amount.subtract(rewardedAmount).max(BigDecimal.ZERO);
         } else if (days < 0) {
             var penaltyAmount = penaltyRate.multiply(amount).multiply(BigDecimal.valueOf(Math.abs(days)));
             return amount.add(penaltyAmount);

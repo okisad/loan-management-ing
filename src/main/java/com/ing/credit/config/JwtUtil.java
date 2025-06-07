@@ -1,5 +1,6 @@
 package com.ing.credit.config;
 
+import com.ing.credit.dtos.RoleEnum;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -7,10 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 @Component
@@ -25,7 +23,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email, UUID userId, UUID customerId, String roles) {
+    public String generateToken(String email, UUID userId, UUID customerId, List<RoleEnum> roles) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
         claims.put("userId", userId);

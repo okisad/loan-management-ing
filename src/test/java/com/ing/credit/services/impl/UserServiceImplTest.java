@@ -5,6 +5,7 @@ import com.ing.credit.dao.entities.CustomerEntity;
 import com.ing.credit.dao.entities.UserEntity;
 import com.ing.credit.dao.repositories.CustomerRepository;
 import com.ing.credit.dao.repositories.UserRepository;
+import com.ing.credit.dtos.RoleEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -14,11 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +54,7 @@ class UserServiceImplTest {
 
         assertEquals("admin", user.getUsername());
         assertEquals("pass", user.getPassword());
-        assertEquals("ADMIN", user.getRoles());
+        assertTrue( user.getRoles().contains(RoleEnum.ADMIN));
     }
 
     @Test
@@ -78,9 +79,9 @@ class UserServiceImplTest {
         var customerId = UUID.randomUUID();
         var jwtToken = "abc";
 
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(new UserEntity(userId, username, "pass", "ADMIN")));
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(new UserEntity(userId, username, "pass", List.of(RoleEnum.ADMIN))));
         when(passwordEncoder.matches(password, "pass")).thenReturn(true);
-        when(jwtUtil.generateToken(username, userId, customerId, "ADMIN")).thenReturn(jwtToken);
+        when(jwtUtil.generateToken(username, userId, customerId, List.of(RoleEnum.ADMIN))).thenReturn(jwtToken);
         when(customerRepository.findByUser_Id(userId)).thenReturn(Optional.of(new CustomerEntity(customerId, null, null, null, null, null)));
 
         var response = userService.login(username, password);
@@ -94,7 +95,7 @@ class UserServiceImplTest {
 
         var userId = UUID.randomUUID();
 
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(new UserEntity(userId, username, "pass", "ADMIN")));
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(new UserEntity(userId, username, "pass", List.of(RoleEnum.ADMIN))));
         when(passwordEncoder.matches(password, "pass")).thenReturn(false);
 
         var runtimeException = assertThrows(RuntimeException.class, () -> {

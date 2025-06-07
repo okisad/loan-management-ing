@@ -34,10 +34,11 @@ public class CustomerServiceImpl implements CustomerService {
         if (userRepository.existsByUsername(username)) {
             throw new RuntimeException("Username is already in use");
         }
-        var user = UserEntity.createUserEntity(username, passwordEncoder.encode(password), RoleEnum.CUSTOMER.name());
+        var user = UserEntity.createUserEntity(username, passwordEncoder.encode(password), List.of(RoleEnum.CUSTOMER));
         var savedUser = userRepository.save(user);
         var customer = CustomerEntity.create(firstName, lastName, creditLimit, savedUser);
         customerRepository.save(customer);
+        log.info("Customer has been created with username {}", username);
         return new CreateCustomerResponse(username, password);
     }
 
