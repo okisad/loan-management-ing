@@ -71,7 +71,7 @@ GET  /api/v1/loans/:loanId/installments     List installments of Loan
 ```
 
 ## Application Configurations
-The configurations can be changed from applicaiton.properties file before running application.
+The configurations can be changed from application.properties file before running application.
 
 ```
 //pre-defined installment counts
@@ -97,6 +97,25 @@ Run with Docker
 ```
 ./mvnw package
 docker-compose up --build
+```
+
+## Usage
+
+## 🔐 Authentication
+Use `/api/v1/access-token` to obtain a JWT token.
+
+for ADMIN user
+```
+curl -X POST http://localhost:8080/api/v1/access-token \
+  -H "Content-Type: application/json" \
+  -d '{"username": "oktay1", "password": "123123"}'
+```
+
+for CUSTOMER user
+```
+curl -X POST http://localhost:8080/api/v1/access-token \
+  -H "Content-Type: application/json" \
+  -d '{"username": "customer1", "password": "pass1"}'
 ```
 
 ## Postman
