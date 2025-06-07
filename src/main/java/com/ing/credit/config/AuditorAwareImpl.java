@@ -21,7 +21,6 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
             return Optional.of(user);
         } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
             return Optional.of("system");
         }
 
