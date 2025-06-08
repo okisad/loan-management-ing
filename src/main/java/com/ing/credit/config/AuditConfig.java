@@ -6,6 +6,7 @@ import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -13,9 +14,15 @@ import java.util.Optional;
 @EnableJpaAuditing(auditorAwareRef = "auditorAware", dateTimeProviderRef = "auditingDateTimeProvider")
 public class AuditConfig {
 
+    private final Clock clock;
+
+    public AuditConfig(Clock clock) {
+        this.clock = clock;
+    }
+
     @Bean
     public DateTimeProvider auditingDateTimeProvider() {
-        return () -> Optional.of(LocalDateTime.now());
+        return () -> Optional.of(LocalDateTime.now(clock));
     }
 
     @Bean

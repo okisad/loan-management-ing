@@ -28,27 +28,31 @@ public class JwtAuthorizationFilter  extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader("Authorization");
-        if (Objects.isNull(header) || !header.startsWith("Bearer ")) {
+        try {
+            String header = request.getHeader("Authorization");
+            if (Objects.isNull(header) || !header.startsWith("Bearer ")) {
+                chain.doFilter(request, response);
+                return;
+            }
+            String token = header.replace("Bearer ", "");
+            String username = jwtUtil.extractUsernameFromToken(token);
+            if (username != null) {
+                JwtTokenContext.setUsername(username);
+            }
+            var userId = jwtUtil.extractValueFromToken("userId", token);
+            if (userId != null) {
+                JwtTokenContext.setUserId(UUID.fromString(userId));
+            }
+            var customerId = jwtUtil.extractValueFromToken("customerId", token);
+            if (customerId != null) {
+                JwtTokenContext.setCustomerId(UUID.fromString(customerId));
+            }
+            UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
-            return;
+        }finally {
+            JwtTokenContext.clear();
         }
-        String token = header.replace("Bearer ", "");
-        String username = jwtUtil.extractUsernameFromToken(token);
-        if (username != null) {
-            JwtTokenContext.setUsername(username);
-        }
-        var userId = jwtUtil.extractValueFromToken("userId",token);
-        if (userId != null) {
-            JwtTokenContext.setUserId(UUID.fromString(userId));
-        }
-        var customerId = jwtUtil.extractValueFromToken("customerId",token);
-        if (customerId != null) {
-            JwtTokenContext.setCustomerId(UUID.fromString(customerId));
-        }
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        chain.doFilter(request, response);
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {

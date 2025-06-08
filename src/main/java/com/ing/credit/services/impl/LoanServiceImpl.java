@@ -92,10 +92,11 @@ public class LoanServiceImpl implements LoanService {
         var paidInstallmentsCount = 0;
         var remainingAmount = amount;
         var totalSpentAmount = BigDecimal.ZERO;
-
+        var now = LocalDate.now(clock);
         for (LoanInstallmentEntity installment : payableInstallments) {
             var paymentAmount = getShouldBePaidAmount(installment.getAmount(), installment.getDueDate());
-            if (paymentAmount.compareTo(remainingAmount) > 0 || paidInstallmentsCount == 3) {
+            var maxAllowedDate = now.plusMonths(2);
+            if (paymentAmount.compareTo(remainingAmount) > 0 || installment.getDueDate().isAfter(maxAllowedDate)) {
                 break;
             }
             installment.pay(LocalDateTime.now(clock), paymentAmount);
@@ -112,9 +113,10 @@ public class LoanServiceImpl implements LoanService {
             customerRepository.save(customer);
             log.info("loan has been completed successfully");
         }
-        if (paidInstallmentsCount > 0)
+        if (paidInstallmentsCount > 0){
             loanRepository.save(loan);
-        log.info("loan has been paid successfully");
+            log.info("installments have been paid successfully");
+        }
         return new PayLoanResponse(paidInstallmentsCount, totalPaidInstallments, loan.getNumberOfInstallments() - totalPaidInstallments, totalSpentAmount, remainingAmount, loan.getIsPaid());
     }
 

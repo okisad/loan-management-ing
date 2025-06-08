@@ -379,6 +379,60 @@ class LoanServiceImplTest {
         assertTrue(paymentResponse.isLoanCompleted());
     }
 
+    @Test
+    void pay_just_following_three_months() {
+        UUID loanId = UUID.randomUUID();
+        given(clock.instant()).willReturn(Instant.parse("2023-12-01T12:15:00Z"));
+        given(clock.getZone()).willReturn(ZoneId.of("UTC"));
+
+        var rewardedRate = BigDecimal.valueOf(0.001);
+        var penaltyRate = BigDecimal.valueOf(0.001);
+        when(loanConfiguration.getPaymentRewardRate()).thenReturn(rewardedRate);
+        when(loanConfiguration.getPaymentPenaltyRate()).thenReturn(penaltyRate);
+
+        var loanAmount = BigDecimal.valueOf(10000);
+        var interestRate = BigDecimal.valueOf(0.1);
+        var numberOfInstallments = 6;
+        BigDecimal expectedInstallmentAmount = loanAmount
+                .add(loanAmount.multiply(interestRate))
+                .divide(BigDecimal.valueOf(numberOfInstallments), 2, RoundingMode.HALF_UP);
+
+        var installments = generateInstallments(loanAmount, interestRate, numberOfInstallments, 0);
+        var customer = new CustomerEntity(UUID.randomUUID(),"first","last", BigDecimal.valueOf(30000), BigDecimal.valueOf(10000),null);
+        var loan = new LoanEntity(loanId, customer, loanAmount, numberOfInstallments, false, installments);
+
+
+        when(loanRepository.findById(loanId)).thenReturn(Optional.of(loan));
+
+        given(clock.instant()).willReturn(Instant.parse("2024-01-01T12:15:00Z"));
+
+        var paymentResponse1 = loanService.payLoan(loanId, expectedInstallmentAmount.add(BigDecimal.valueOf(100)));
+        assertEquals(1 , paymentResponse1.numberOfPaidInstallments());
+
+        var paymentResponse2 = loanService.payLoan(loanId, expectedInstallmentAmount);
+        assertEquals(1 , paymentResponse2.numberOfPaidInstallments());
+
+        var paymentResponse3 = loanService.payLoan(loanId, expectedInstallmentAmount);
+        assertEquals(1 , paymentResponse3.numberOfPaidInstallments());
+
+        var notPaidPaymentResponse = loanService.payLoan(loanId, expectedInstallmentAmount);
+
+        assertEquals(0 , notPaidPaymentResponse.numberOfPaidInstallments());
+        assertEquals(3 , notPaidPaymentResponse.totalNumberOfPaidInstallments());
+        assertEquals(3 , notPaidPaymentResponse.numberOfRemainingInstallments());
+        assertFalse(notPaidPaymentResponse.isLoanCompleted());
+
+        given(clock.instant()).willReturn(Instant.parse("2024-02-01T12:15:00Z"));
+
+        var paymentAfterOneMonthResponse = loanService.payLoan(loanId, expectedInstallmentAmount);
+
+        assertEquals(1 , paymentAfterOneMonthResponse.numberOfPaidInstallments());
+        assertEquals(4 , paymentAfterOneMonthResponse.totalNumberOfPaidInstallments());
+        assertEquals(2 , paymentAfterOneMonthResponse.numberOfRemainingInstallments());
+        assertFalse(paymentAfterOneMonthResponse.isLoanCompleted());
+    }
+
+
     List<LoanInstallmentEntity> generateInstallments(BigDecimal loanAmount, BigDecimal interestRate, int numberOfInstallments, int paidInstallmentCount) {
         BigDecimal expectedInstallmentAmount = loanAmount
                 .add(loanAmount.multiply(interestRate))
